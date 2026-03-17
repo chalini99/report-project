@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+backend/uploads
+frontend/.next
+node_modules
+*.pdf

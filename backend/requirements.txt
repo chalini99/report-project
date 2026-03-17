@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+python-jose[cryptography]
+python-multipart
+pymupdf
+pytesseract
+pdf2image
+Pillow
+transformers
+torch
+reportlab
+hypothesis

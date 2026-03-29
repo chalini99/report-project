@@ -1,108 +1,122 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import Link from "next/link";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ username }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.detail || "Login failed. Please try again.");
-        return;
-      }
-
-      const data = await res.json();
-      localStorage.setItem("token", data.access_token);
-      localStorage.setItem("role", data.role);
-
-      if (data.role === "patient") {
-        router.push("/dashboard/patient");
-      } else if (data.role === "doctor") {
-        router.push("/dashboard/doctor");
-      }
-    } catch {
-      setError("Network error. Please check your connection.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-        {/* Header */}
-        <div className="flex flex-col items-center mb-8">
-          <span className="text-5xl mb-3">🏥</span>
-          <h1 className="text-2xl font-bold text-teal-700">Medical Insight AI</h1>
-          <p className="text-sm text-gray-500 mt-1">AI-powered medical report analysis</p>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-100">
+
+      {/* NAVBAR */}
+      <nav className="flex justify-between items-center px-10 py-5 bg-white shadow-md">
+        <h1 className="text-2xl font-bold text-teal-700">
+          🏥 Medical Insight AI
+        </h1>
+
+        <div className="space-x-4">
+          <Link href="/login" className="text-gray-600 hover:text-black">
+            Login
+          </Link>
+
+          <Link
+            href="/login"
+            className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700"
+          >
+            Get Started
+          </Link>
+        </div>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section className="text-center py-24 px-6">
+
+        <h2 className="text-5xl font-bold mb-6 text-gray-800">
+          Understand Your Medical Reports Instantly 🧠
+        </h2>
+
+        <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+          Upload your lab reports and get AI-powered insights, health tips,
+          and easy-to-understand explanations in seconds.
+        </p>
+
+        <Link
+          href="/login"
+          className="bg-teal-600 text-white px-8 py-3 rounded-lg text-lg shadow hover:bg-teal-700"
+        >
+          Get Started →
+        </Link>
+
+      </section>
+
+      {/* FEATURES */}
+      <section className="grid md:grid-cols-3 gap-6 px-10 pb-20">
+
+        <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+          <h3 className="font-bold text-xl mb-2">🧠 AI Summarization</h3>
+          <p className="text-gray-600">
+            Converts complex medical terms into simple language.
+          </p>
         </div>
 
-        {/* Quick-select buttons */}
-        <div className="flex gap-3 mb-6">
-          <button
-            type="button"
-            onClick={() => setUsername("patient")}
-            className="flex-1 py-2 rounded-lg border-2 border-teal-200 text-teal-700 text-sm font-medium hover:bg-teal-50 transition-colors"
-          >
-            👤 Login as Patient
-          </button>
-          <button
-            type="button"
-            onClick={() => setUsername("doctor")}
-            className="flex-1 py-2 rounded-lg border-2 border-blue-200 text-blue-700 text-sm font-medium hover:bg-blue-50 transition-colors"
-          >
-            🩺 Login as Doctor
-          </button>
+        <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+          <h3 className="font-bold text-xl mb-2">📊 Health Insights</h3>
+          <p className="text-gray-600">
+            Detect risks like diabetes, anemia, and cholesterol issues.
+          </p>
         </div>
 
-        {/* Login form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+          <h3 className="font-bold text-xl mb-2">💡 Smart Recommendations</h3>
+          <p className="text-gray-600">
+            Get personalized health tips instantly.
+          </p>
+        </div>
+
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="bg-white py-20 text-center">
+
+        <h2 className="text-3xl font-bold mb-10 text-gray-800">
+          How It Works
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-6 px-10">
+
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-gray-800"
-            />
+            <h4 className="font-semibold text-lg">1. Upload</h4>
+            <p className="text-gray-600">Upload your medical report</p>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
-              {error}
-            </p>
-          )}
+          <div>
+            <h4 className="font-semibold text-lg">2. Analyze</h4>
+            <p className="text-gray-600">AI processes your report</p>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading || !username.trim()}
-            className="w-full py-2.5 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-300 text-white font-semibold rounded-lg transition-colors"
-          >
-            {loading ? "Signing in…" : "Sign In"}
-          </button>
-        </form>
-      </div>
-    </main>
+          <div>
+            <h4 className="font-semibold text-lg">3. Understand</h4>
+            <p className="text-gray-600">Get clear insights & tips</p>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* CTA */}
+      <section className="text-center py-20">
+
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">
+          Take Control of Your Health Today 🚀
+        </h2>
+
+        <Link
+          href="/login"
+          className="bg-teal-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-teal-700"
+        >
+          Login Now
+        </Link>
+
+      </section>
+
+    </div>
   );
 }
